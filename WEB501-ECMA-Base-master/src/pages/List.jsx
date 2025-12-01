@@ -1,102 +1,93 @@
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import axios from "axios";
+import { useEffect, useState } from 'react'
+import toast, { Toaster } from 'react-hot-toast'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 function ListPage() {
-  const [tours, setTour] = useState([]);
+  const [tours, setTours] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [deletingId, setDeletingId] = useState(null)
 
   useEffect(() => {
     const getTours = async () => {
+      setLoading(true)
       try {
-        const { data } = await axios.get("http://localhost:3000/tours");
-        setTour(data);
+        const { data } = await axios.get('http://localhost:3000/tours')
+        setTours(data)
       } catch (error) {
-        toast.error("Lỗi tải dữ liệu");
+        toast.error(error.response?.data?.message || error.message || 'Lỗi khi lấy dữ liệu')
+      } finally {
+        setLoading(false)
       }
-    };
-    getTours();
-  }, []);
-
-  const handleDelete = async (id) => {
-    try {
-      if (confirm("toi muon xoa tour nay")) {
-        await axios.delete("http://localhost:3000/tours/" + id);
-        setTour(tours.filter((tour) => tour.id !== id));
-        toast.success("xoa thanh cong");
-      }
-    } catch (error) {
-      toast.error("Lỗi xóa tour");
     }
-  };
+    getTours()
+  }, [])
+
+  const handleDelete = async id => {
+    try {
+      if (!window.confirm('Tao muon xoa tour nay')) return
+      setDeletingId(id)
+      await axios.delete(`http://localhost:3000/tours/${id}`)
+      setTours(prev => prev.filter(t => String(t.id) !== String(id)))
+      toast.success('Ok tao da xoa duoc roi')
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
   return (
     <div className="p-6">
+      <Toaster />
       <h1 className="text-2xl font-semibold mb-6">Danh sách</h1>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border border-gray-300 rounded-lg">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-2 border border-gray-300 text-left">#</th>
-              <th className="px-4 py-2 border border-gray-300 text-left">
-                First
-              </th>
-              <th className="px-4 py-2 border border-gray-300 text-left">
-                Last
-              </th>
-              <th className="px-4 py-2 border border-gray-300 text-left">
-                Email
-              </th>
-              <th className="px-4 py-2 border border-gray-300 text-left">
-                Action
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {tours.map((item) => (
-              <tr key={item.id} className="hover:bg-gray-50">
-                <td className="px-4 py-2 border border-gray-300">{item.id}</td>
-
-
-                <td className="px-4 py-2 border border-gray-300">{item.name}</td>
-
-
-                <td className="px-4 py-2 border border-gray-300">
-                  {item.destination}
-                </td>
-
-
-                <td className="px-4 py-2 border border-gray-300">
-                  {item.price.toLocaleString()}
-                </td>
-
-                <td className="px-4 py-2 border border-gray-300">
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="px-3 py-1 bg-red-500 text-white rounded"
-                  >
-                    Xóa
-                  </button>
-                </td>
-              </tr>
-            ))}
-
-            {tours.length === 0 && (
+      {loading ? (
+        <p>Đang tải...</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full border border-gray-300 rounded-lg">
+            <thead className="bg-gray-100">
               <tr>
-                <td
-                  colSpan={5}
-                  className="text-center py-4 border border-gray-300 text-gray-500"
-                >
-                  Không có dữ liệu
-                </td>
+                <th className="px-4 py-2 border border-gray-300 text-left">ID</th>
+                <th className="px-4 py-2 border border-gray-300 text-left">Name</th>
+                <th className="px-4 py-2 border border-gray-300 text-left">Last</th>
+                <th className="px-4 py-2 border border-gray-300 text-left">Handle</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+
+            <tbody>
+              {tours.map(tour => (
+                <tr key={tour.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-2 border border-gray-300">{tour.id}</td>
+                  <td className="px-4 py-2 border border-gray-300">{tour.name}</td>
+                  <td className="px-4 py-2 border border-gray-300">....</td>
+                  <td className="px-4 py-2 border border-gray-300 flex gap-2">
+
+
+                    <Link
+                      to={`/tours/edit/${tour.id}`}
+                      className="px-3 py-1 rounded bg-blue-500 text-white"
+                    >
+                      Edit
+                    </Link>
+
+
+                    <button
+                      onClick={() => handleDelete(tour.id)}
+                      disabled={deletingId === tour.id}
+                      className="px-3 py-1 rounded bg-red-500 text-white disabled:opacity-50"
+                    >
+                      {deletingId === tour.id ? 'Đang xóa...' : 'Delete'}
+                    </button>
+
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
-  );
+  )
 }
 
-export default ListPage;
+export default ListPage
