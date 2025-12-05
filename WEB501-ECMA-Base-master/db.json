@@ -2,9 +2,21 @@
   "tours": [
     {
       "name": "hai duong",
-      "price": 12345,
+      "price": 1234,
       "category": "Tour noi dia",
       "id": 2
+    },
+    {
+      "name": "hung yen",
+      "price": 11,
+      "category": "Tour noi dia",
+      "id": 3
+    },
+    {
+      "name": "thai binh",
+      "price": 22,
+      "category": "Tour noi dia",
+      "id": 4
     }
   ]
 }

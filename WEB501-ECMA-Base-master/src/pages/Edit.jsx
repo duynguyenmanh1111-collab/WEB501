@@ -1,121 +1,99 @@
-import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import toast, { Toaster } from 'react-hot-toast'
-import axios from 'axios'
+import axios from "axios"
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
+import { useParams } from "react-router-dom"
 
-function EditPage() {
+function Edit() {
   const { id } = useParams()
-  const navigate = useNavigate()
-
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
-  const [category, setCategory] = useState('Tour noi dia')
-  const [loading, setLoading] = useState(true)
+  const [category, setCategory] = useState('')
+
   useEffect(() => {
-    const fetchTour = async () => {
+    const getTour = async () => {
       try {
-        setLoading(true)
-        const res = await axios.get(`http://localhost:3000/tours/${id}`)
-        const tour = res.data
-        setName(tour.name || '')
-        setPrice(tour.price || '')
-        setCategory(tour.category || 'Tour noi dia')
-      } catch (err) {
-        toast.error('Không tìm thấy tour này!')
-        navigate('/list')
-      } finally {
-        setLoading(false)
+        const { data } = await axios.get(` http://localhost:3000/tours/${id}`)
+        setName(data.name)
+        setPrice(data.price)
+        setCategory(data.category)
+      } catch (error) {
+        toast.error('Loi call api')
       }
     }
+    getTour()
+  }, [id])
 
-    if (id) fetchTour()
-  }, [id, navigate])
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    if (!name.trim() || !price) {
-      toast.error('Vui lòng điền đầy đủ thông tin')
-      return
-    }
-
+  // handleChange
+  const handleSubmit = async event => {
+    event.preventDefault()
     try {
-      await axios.put(`http://localhost:3000/tours/${id}`, {
-        name: name.trim(),
+      await axios.put(` http://localhost:3000/tours/${id}`, {
+        name,
         price: Number(price),
-        category,
+        category: category,
       })
-
-      toast.success('Sửa thành công')
-      navigate('/list')
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Thất bại rồi cố lên')
+      toast.success('update thanh cong ')
+    } catch (error) {
+      toast.error(error.message)
     }
   }
-
-
-
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <Toaster position="top-right" />
-      <h1 className="text-3xl font-bold mb-8 text-center">Sửa Tour</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-semibold mb-6">Update </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl shadow-lg">
+      <form className="space-y-6" onSubmit={handleSubmit}>
+        {/* Text input */}
         <div>
-          <label className="block text-sm font-medium mb-2">Tên tour</label>
+          <label htmlFor="text" className="block font-medium mb-1">
+            Name
+          </label>
           <input
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={event => setName(event.target.value)}
             type="text"
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Nhập tên tour"
+            id="text"
+            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium mb-2">Giá tour</label>
+          <label htmlFor="text" className="block font-medium mb-1">
+            Price
+          </label>
           <input
             value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            onChange={event => setPrice(event.target.value)}
             type="number"
-            min="0"
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="Nhập giá tiền"
+            id="text"
+            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
+        {/* Select */}
         <div>
-          <label className="block text-sm font-medium mb-2">Loại tour</label>
+          <label htmlFor="selectOption" className="block font-medium mb-1">
+            Category
+          </label>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            onChange={e => setCategory(e.target.value)}
+            id="selectOption"
+            className="w-full border rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="Tour noi dia">Tour nội địa</option>
-            <option value="Tour quoc te">Tour quốc tế</option>
+            <option value="Tour noi dia">Tour noi dia</option>
+            <option value="Tour quoc te">Tour quoc te</option>
           </select>
         </div>
 
-        <div className="flex gap-4">
-          <button
-            type="submit"
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
-          >
-            Sửa
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/list')}
-            className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition font-medium"
-          >
-            Hủy
-          </button>
-        </div>
+        {/* Submit button */}
+        <button
+          type="submit"
+          className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        >
+          Submit
+        </button>
       </form>
     </div>
   )
 }
 
-export default EditPage
+export default Edit

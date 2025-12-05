@@ -1,93 +1,84 @@
-import { useEffect, useState } from 'react'
-import toast, { Toaster } from 'react-hot-toast'
-import axios from 'axios'
+import toast from 'react-hot-toast'
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
-
-function ListPage() {
-  const [tours, setTours] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [deletingId, setDeletingId] = useState(null)
-
+const API = "  http://localhost:3000"
+// Hiển thị
+function List() {
+  const [tours, setTours] = useState([]);
   useEffect(() => {
-    const getTours = async () => {
-      setLoading(true)
-      try {
-        const { data } = await axios.get('http://localhost:3000/tours')
-        setTours(data)
-      } catch (error) {
-        toast.error(error.response?.data?.message || error.message || 'Lỗi khi lấy dữ liệu')
-      } finally {
-        setLoading(false)
-      }
-    }
-    getTours()
-  }, [])
-
-  const handleDelete = async id => {
-    try {
-      if (!window.confirm('Tao muon xoa tour nay')) return
-      setDeletingId(id)
-      await axios.delete(`http://localhost:3000/tours/${id}`)
-      setTours(prev => prev.filter(t => String(t.id) !== String(id)))
-      toast.success('Ok tao da xoa duoc roi')
-    } finally {
-      setDeletingId(null)
-    }
+    axios
+      .get(`${API}/tours`)
+      .then((response) => {
+        setTours(response.data);
+        toast.success("Thành công");
+      }).catch(() => {
+        toast.error("Không thành công ");
+      });
+  }, []);
+  const handleDelete = () => {
+    toast.success('Delete successfull');
   }
-
+  // Xóa 
+  const Delete = (id) => {
+    if (confirm("Bạn có muốn xóa trang này không ")) {
+      axios.delete(`${API}/tours/${id}`).then(() => {
+        setTours(tours.filter(tour => tour.id == !id));
+        toast.success("Xóa thành công")
+      }).catch(() => {
+        toast.error("Xóa thất bại ")
+      });
+    };
+  };
   return (
     <div className="p-6">
-      <Toaster />
       <h1 className="text-2xl font-semibold mb-6">Danh sách</h1>
 
-      {loading ? (
-        <p>Đang tải...</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border border-gray-300 rounded-lg">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 border border-gray-300 text-left">ID</th>
-                <th className="px-4 py-2 border border-gray-300 text-left">Name</th>
-                <th className="px-4 py-2 border border-gray-300 text-left">Last</th>
-                <th className="px-4 py-2 border border-gray-300 text-left">Handle</th>
+      <div className="overflow-x-auto">
+        <table className="w-full border border-gray-300 rounded-lg">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="px-4 py-2 border border-gray-300 text-left">#</th>
+              <th className="px-4 py-2 border border-gray-300 text-left">
+                Tên tour
+              </th>
+              <th className="px-4 py-2 border border-gray-300 text-left">
+                Giá
+              </th>
+              <th className="px-4 py-2 border border-gray-300 text-left">
+                Thời gian
+              </th>
+              <th className="px-4 py-2 border border-gray-300 text-left">
+                Ảnh
+              </th>
+              <th className="px-4 py-2 border border-gray-300 text-left">
+                Hành động
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {tours.map((tour, index) => (
+              <tr key={tour.id} className="border-b hover:bg-gray-50">
+                <td className="px-4 py-3">{index + 1}</td>
+                <td className="px-4 py-3">{tour.name}</td>
+                <td className="px-4 py-3">{tour.price.toLocaleString()}$</td>
+                <td className="px-4 py-3">{tour.duration}</td>
+                <td className="px-4 py-3">
+                  <img src={tour.image} alt={tour.name} className="w-16 h-12 object-cover rounded" />
+                </td>
+                <td>
+                  <button onClick={() => Delete(tour.id)} className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Xóa</button>
+                  <Link to={`/edit/${tour.id}`}>
+                    <button className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Sửa</button>
+                  </Link>
+                </td>
               </tr>
-            </thead>
-
-            <tbody>
-              {tours.map(tour => (
-                <tr key={tour.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 border border-gray-300">{tour.id}</td>
-                  <td className="px-4 py-2 border border-gray-300">{tour.name}</td>
-                  <td className="px-4 py-2 border border-gray-300">....</td>
-                  <td className="px-4 py-2 border border-gray-300 flex gap-2">
-
-
-                    <Link
-                      to={`/tours/edit/${tour.id}`}
-                      className="px-3 py-1 rounded bg-blue-500 text-white"
-                    >
-                      Edit
-                    </Link>
-
-
-                    <button
-                      onClick={() => handleDelete(tour.id)}
-                      disabled={deletingId === tour.id}
-                      className="px-3 py-1 rounded bg-red-500 text-white disabled:opacity-50"
-                    >
-                      {deletingId === tour.id ? 'Đang xóa...' : 'Delete'}
-                    </button>
-
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
-  )
+  );
 }
-
-export default ListPage
+export default List;
