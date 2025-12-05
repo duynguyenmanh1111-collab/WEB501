@@ -1,13 +1,12 @@
-import { useState } from 'react'
-import { toast } from 'react-hot-toast'
-import axios from 'axios'
+import { useState } from "react";
+import toast from "react-hot-toast";
+import axios from "axios";
 import { useNavigate } from 'react-router-dom'
-
-function LoginPage() {
+function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const nav = useNavigate() // bai so 10 routing
-
+    // handleChange
     const handleSubmit = async event => {
         event.preventDefault()
         try {
@@ -64,5 +63,4 @@ function LoginPage() {
         </div>
     )
 }
-
-export default LoginPage
+export default Login;

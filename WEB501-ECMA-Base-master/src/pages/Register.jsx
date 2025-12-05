@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { toast } from 'react-hot-toast'
-import axios from 'axios'
+import axios from "axios";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
-function RegisterPage() {
+function Register() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
@@ -11,7 +11,7 @@ function RegisterPage() {
         event.preventDefault()
         try {
             await axios.post('http://localhost:3000/register', {
-                email, // es6
+                email, //es6
                 password,
             })
             toast.success('them thanh cong')
@@ -62,4 +62,4 @@ function RegisterPage() {
     )
 }
 
-export default RegisterPage
+export default Register;
