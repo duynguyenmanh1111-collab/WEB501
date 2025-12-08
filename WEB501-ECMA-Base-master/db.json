@@ -1,0 +1,84 @@
+{
+    "tours": [
+        {
+            "id": 2,
+            "name": "Hạ Long - Cát Bà 2N1D",
+            "destination": "Hạ Long",
+            "duration": "2 ngày 1 đêm",
+            "price": 1800000,
+            "image": "https://picsum.photos/400/300?random=2",
+            "description": "Du thuyền vịnh Hạ Long - Kỳ quan thiên nhiên thế giới",
+            "available": 20
+        },
+        {
+            "id": 3,
+            "name": "Đà Lạt 4N3D",
+            "destination": "Đà Lạt",
+            "duration": "4 ngày 3 đêm",
+            "price": 3200000,
+            "image": "https://picsum.photos/400/300?random=3",
+            "description": "Thành phố ngàn hoa với khí hậu mát mẻ quanh năm",
+            "available": 10
+        },
+        {
+            "name": "ha long",
+            "id": 4
+        },
+        {
+            "name": "ha long",
+            "id": 5
+        },
+        {
+            "name": "ha long",
+            "price": 200000,
+            "id": 6
+        },
+        {
+            "name": "ha long",
+            "price": "200000",
+            "id": 7
+        },
+        {
+            "name": "ha long update",
+            "price": 200000,
+            "category": "",
+            "id": 8
+        },
+        {
+            "name": "ha long",
+            "price": 2222,
+            "category": "Tour quoc te",
+            "id": 9
+        },
+        {
+            "name": "ha long",
+            "price": 33333,
+            "category": "",
+            "id": 10
+        },
+        {
+            "name": "ha long",
+            "price": 33333,
+            "category": "Tour quoc te",
+            "id": 11
+        },
+        {
+            "name": "ha long",
+            "price": 22222,
+            "category": "Tour quoc te",
+            "id": 12
+        }
+    ],
+    "users": [
+        {
+            "email": "email@gmail.com",
+            "password": "$2a$10$cMHUBiWq.8FGc9BhcPMibueS8s/WOZGZfiTzTTHwPxEioB6As/qFS",
+            "id": 1
+        },
+        {
+            "email": "email1@gmail.com",
+            "password": "$2a$10$NPUh5gZ7IXLqd2.Ie9NA7u2Pt83XHXxvkn0Zg/4Wm4jCyyIYzQLAe",
+            "id": 2
+        }
+    ]
+}
